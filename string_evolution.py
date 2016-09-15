@@ -18,12 +18,9 @@ def generate_candidate():
 
 
 def calculate_fitness(dna):
-    fitness = 0
-    for (a, b) in zip(dna, TARGET):
-        if a == b:
-            fitness += 1
-    diff_length = abs(len(dna) - len(TARGET))
-    fitness -= (diff_length*1.1)
+    fitness = sum([a == b for (a, b) in zip(dna, TARGET)])
+    diff_in_length = abs(len(dna) - len(TARGET))
+    fitness -= (diff_in_length * 1.1)
     return fitness
 
 
@@ -32,10 +29,7 @@ def crossover(string1, string2):
 
 
 def stop_condition(candidate):
-    if candidate.dna == TARGET:
-        return True
-    else:
-        return False
+    return candidate.dna == TARGET
 
 
 if __name__ == "__main__":
