@@ -3,11 +3,11 @@
 import ga
 import string
 
-from ga_utils import generate_random_string, breed_strings
+from ga_string_utils import generate_random_string, breed_strings
 
 
-TARGET = "I LOVE GENETIC ALGORITHMS"
-CHARACTERS = string.ascii_letters + " "
+TARGET = "PYCON UK 2016: A P45 FROM C-3PO?"
+CHARACTERS = string.printable
 MUTATION_RATE = 0.75
 MAX_STRING_LENGTH = 100
 POPULATION_SIZE = 100
@@ -32,7 +32,7 @@ def crossover(string1, string2):
 
 
 def stop_condition(candidate):
-    if candidate.this == TARGET:
+    if candidate.dna == TARGET:
         return True
     else:
         return False

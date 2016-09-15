@@ -9,6 +9,10 @@ class TimeoutError(Exception):
     pass
 
 
+class OoopsError(Exception):
+    pass
+
+
 def timelimit(timeout):
     def internal(function):
         def internal2(*args, **kw):
@@ -30,7 +34,7 @@ def timelimit(timeout):
             if c.isAlive():
                 raise TimeoutError
             if c.error:
-                raise c.error
+                raise OoopsError
             return c.result
         return internal2
     return internal

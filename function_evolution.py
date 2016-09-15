@@ -13,7 +13,7 @@ POPULATION_SIZE = 100
 
 
 def target(x):
-    return 3*x - 5
+    return 3 * x - 5
 
 
 class RandomOperator(object):
@@ -61,10 +61,7 @@ def _choose_terminal():
 
 
 def _is_leaf(tree):
-    if hasattr(tree, "children"):
-        return False
-    else:
-        return True
+    return not hasattr(tree, "children")
 
 
 def generate_tree(depth=0):
@@ -154,10 +151,7 @@ def calc_fitness(func):
 
 
 def stop_condition(candidate):
-    if candidate.fitness == 0:
-        return True
-    else:
-        return False
+    return candidate.fitness == 0
 
 
 if __name__ == "__main__":

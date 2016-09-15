@@ -142,5 +142,28 @@ def bf_interpreter(program_string):
             program_position += 1
 
 
+def simplify(program_string):
+    opposites = {">": "<",
+                 "<": ">",
+                 "+": "-",
+                 "-": "+",
+                 "]": "[",
+                 "[": None,
+                 ".": None,
+                 ",": None}
+
+    simplified = []
+    for command in list(program_string):
+        if simplified:
+            if opposites[command] == simplified[-1]:
+                simplified.pop()
+            else:
+                simplified.append(command)
+        else:
+            simplified.append(command)
+
+    return "".join(simplified)
+
+
 if __name__ == "__main__":
     bf_interpreter(sys.argv[1])
