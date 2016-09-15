@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # From http://code.activestate.com/recipes/483752-timelimit-tell-a-function-to-time-out-after-a-time/
 
 import threading
