@@ -14,7 +14,7 @@ from timeout import timelimit, TimeoutError, OoopsError
 MAX_PROGRAM_LEN = 200
 PROGRAM_EXEC_TIMEOUT = 1
 WEIGHTED_COMMANDS = (2 * ["+", "+++", "+++++", "-", "---", "-----"]) + [">>>", ">", "<", "<<<", "[", "]", "."]  # ","
-TARGET_PROGRAM_OUTPUT = "hello"  # for speed, target characters are limited to lowercase letters (see character_set.py)
+TARGET_PROGRAM_OUTPUT = "hi"  # for speed, target characters are limited to lowercase letters (see character_set.py)
 MUTATION_RATE = 1
 POPULATION_SIZE = 40
 
