@@ -1,169 +1,134 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 
 import sys
 
-from character_set import (CHARACTER_SET_SIZE, CHARACTER_TO_VALUE,
-                           VALUE_TO_CHARACTER)
-
-
-MEMORY_SIZE = 30000
+from character_set import AsciiCharacterSet, CharacterSet
 
 
 class SegmentationFault(Exception):
     pass
 
 
-class Break(Exception):
+class InvalidBrainfuck(Exception):
     pass
 
 
-class Continue(Exception):
-    pass
+class TuringMachine(object):
+    def __init__(self, tape_length=30000, cell_size=256):
+        self.tape_length = tape_length
+        self.tape = [0] * tape_length
+        self.pointer = 0
+        self.cell_size = cell_size
+
+    def move_pointer_forwards(self):
+        self.pointer += 1
+        if self.pointer >= self.tape_length:
+            raise SegmentationFault
+
+    def move_pointer_backwards(self):
+        self.pointer -= 1
+        if self.pointer < 0:
+            raise SegmentationFault
+
+    def get_value_at_pointer(self):
+        return self.tape[self.pointer]
+
+    def set_value_at_pointer(self, value):
+        self.tape[self.pointer] = value % self.cell_size
+
+    def increment_value_at_pointer(self):
+        self.set_value_at_pointer(self.get_value_at_pointer() + 1)
+
+    def decrement_value_at_pointer(self):
+        self.set_value_at_pointer(self.get_value_at_pointer() - 1)
 
 
-def _increment_data_pointer():
-    global memory_index
-    memory_index += 1
-    if memory_index >= MEMORY_SIZE:
-        raise SegmentationFault
+class BrainfuckInterpreter(TuringMachine):
+    def __init__(self, program_string, character_set):
+        super(BrainfuckInterpreter, self).__init__()
 
+        self.commands = {">": self.move_pointer_forwards,
+                         "<": self.move_pointer_backwards,
+                         "+": self.increment_value_at_pointer,
+                         "-": self.decrement_value_at_pointer,
+                         ".": self.output_value_at_pointer,
+                         ",": self.input_value_at_pointer,
+                         "[": self.while_value_at_pointer_is_non_zero,
+                         "]": self.end_while}
 
-def _decrement_data_pointer():
-    global memory_index
-    memory_index -= 1
-    if memory_index < 0:
-        raise SegmentationFault
+        self.program_string = program_string
+        self.program_position = 0
 
+        # Generate mappings to lookup location of matching braces.
+        self.find_opening_brace, self.find_closing_brace = self._find_braces()
 
-def _increment_val():
-    memory[memory_index] = (memory[memory_index] + 1) % CHARACTER_SET_SIZE
+        assert isinstance(character_set, CharacterSet)
+        self.character_set = character_set
+        self.cell_size = character_set.size
 
+    def output_value_at_pointer(self):
+        sys.stdout.write(self.character_set.get_char(self.get_value_at_pointer()))
 
-def _decrement_val():
-    memory[memory_index] = (memory[memory_index] - 1) % CHARACTER_SET_SIZE
+    def input_value_at_pointer(self):
+        while True:
+            user_input = raw_input("Enter a single character:")
+            if len(user_input) == 1:
+                self.set_value_at_pointer(self.character_set.get_value(user_input))
+                break
 
+    def while_value_at_pointer_is_non_zero(self):
+        if self.get_value_at_pointer() == 0:
+            self.program_position = self.find_closing_brace[self.program_position]
 
-def _output_val():
-    sys.stdout.write(VALUE_TO_CHARACTER[memory[memory_index]])
+    def end_while(self):
+        if self.get_value_at_pointer() != 0:
+            self.program_position = self.find_opening_brace[self.program_position]
 
-
-def _input_val():
-    while True:
-        user_input = raw_input("Enter a single character:")
-        if len(user_input) == 1:
-            memory[memory_index] = CHARACTER_TO_VALUE[user_input]
-            break
-
-
-def _while_non_zero():
-    if memory[memory_index] == 0:
-        raise Break
-
-
-def _end_while():
-    if memory[memory_index] != 0:
-        raise Continue
-
-
-COMMANDS = {">": _increment_data_pointer,
-            "<": _decrement_data_pointer,
-            "+": _increment_val,
-            "-": _decrement_val,
-            ".": _output_val,
-            ",": _input_val,
-            "[": _while_non_zero,
-            "]": _end_while}
-
-
-def _find_braces(program_string):
-    find_opening_brace = {}
-    find_closing_brace = {}
-
-    opening_braces = []
-    for (position, character) in enumerate(program_string):
-        if character == "[":
-            opening_braces.append(position)
-
-        elif character == "]":
+    def run(self):
+        while True:
             try:
-                opening_brace_position = opening_braces.pop()
+                instruction = self.program_string[self.program_position]
             except IndexError:
-                opening_brace_position = None
+                # We've reached the end of the program.
+                break
 
-            find_opening_brace[position] = opening_brace_position
+            try:
+                self.commands[instruction]()
+            except KeyError:
+                # Brainfuck just ignores any characters that are not in it's operator set.
+                pass
+            except SegmentationFault:
+                # Treat this as a valid way to trigger program exit.
+                break
 
-            if opening_brace_position is not None:
+            self.program_position += 1
+
+    def _find_braces(self):
+        find_opening_brace = {}
+        find_closing_brace = {}
+
+        opening_braces = []
+        for (position, character) in enumerate(self.program_string):
+            if character == "[":
+                opening_braces.append(position)
+
+            elif character == "]":
+                try:
+                    opening_brace_position = opening_braces.pop()
+                except IndexError:
+                    # No matching opening brace
+                    raise InvalidBrainfuck
+
+                find_opening_brace[position] = opening_brace_position
                 find_closing_brace[opening_brace_position] = position
 
-    if len(opening_braces) != 0:
-        for opening_brace_position in opening_braces:
-            find_closing_brace[opening_brace_position] = None
+        if len(opening_braces) != 0:
+            # Missing closing brace(s)
+            raise InvalidBrainfuck
 
-    return find_opening_brace, find_closing_brace
-
-
-def _initialise_memory():
-    global memory, memory_index
-    memory = [0] * MEMORY_SIZE
-    memory_index = 0
-
-
-def bf_interpreter(program_string):
-    _initialise_memory()
-    # Generate mappings to lookup location of matching braces.
-    find_opening_brace, find_closing_brace = _find_braces(program_string)
-
-    program_position = 0
-    while True:
-        try:
-            instruction = program_string[program_position]
-        except IndexError:
-            # We've reached the end of the program.
-            break
-
-        try:
-            COMMANDS[instruction]()
-        except KeyError:
-            # Brainfuck just ignores any characters that are not in it's operator set.
-            pass
-        except SegmentationFault:
-            # Treat this as a valid way to trigger program exit.
-            break
-        except Break:
-            program_position = find_closing_brace[program_position]
-        except Continue:
-            program_position = find_opening_brace[program_position]
-
-        if program_position is None:
-            # i.e. program is syntactically invalid as there is no matching
-            #      opening/closing brace to go to - exit.
-            break
-        else:
-            program_position += 1
-
-
-def simplify(program_string):
-    opposites = {">": "<",
-                 "<": ">",
-                 "+": "-",
-                 "-": "+",
-                 "]": "[",
-                 "[": None,
-                 ".": None,
-                 ",": None}
-
-    simplified = []
-    for command in list(program_string):
-        if simplified:
-            if opposites[command] == simplified[-1]:
-                simplified.pop()
-            else:
-                simplified.append(command)
-        else:
-            simplified.append(command)
-
-    return "".join(simplified)
+        return find_opening_brace, find_closing_brace
 
 
 if __name__ == "__main__":
-    bf_interpreter(sys.argv[1])
+    bf_interpreter = BrainfuckInterpreter(program_string=sys.argv[1], character_set=AsciiCharacterSet())
+    bf_interpreter.run()

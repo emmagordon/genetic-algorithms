@@ -1,14 +1,30 @@
-#!/usr/bin/env python2
-
-import string
+#!/usr/bin/env python2.7
 
 
-CHARACTER_SET = string.lowercase  # change to string.printable for grater output variety
-CHARACTER_SET_SIZE = len(CHARACTER_SET)
-CHARACTER_TO_VALUE = {}
-VALUE_TO_CHARACTER = {}
+class CharacterSet(object):
+    def __init__(self):
+        self.size = 0
+        self.char_to_value = {}
+        self.value_to_char = {}
+
+    def get_value(self, character):
+        return self.char_to_value[character]
+
+    def get_char(self, value):
+        return self.value_to_char[value]
 
 
-for index, printable_char in enumerate(CHARACTER_SET):
-    CHARACTER_TO_VALUE[printable_char] = index
-    VALUE_TO_CHARACTER[index] = printable_char
+class CharacterSetFromString(CharacterSet):
+    def __init__(self, character_set_string):
+        super(CharacterSetFromString, self).__init__()
+        self.size = len(character_set_string)
+        self.char_to_value = {char: val for val, char in enumerate(character_set_string)}
+        self.value_to_char = {val: char for val, char in enumerate(character_set_string)}
+
+
+class AsciiCharacterSet(CharacterSet):
+    def __init__(self):
+        super(AsciiCharacterSet, self).__init__()
+        self.size = 256
+        self.char_to_value = {chr(val): val for val in xrange(self.size)}
+        self.value_to_char = {val: chr(val) for val in xrange(self.size)}

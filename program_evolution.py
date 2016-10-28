@@ -1,12 +1,13 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 
 import contextlib
+import string
 import sys
 import StringIO
 
 import ga
-from brainfuck import bf_interpreter, simplify
-from character_set import CHARACTER_TO_VALUE, CHARACTER_SET_SIZE
+from brainfuck import BrainfuckInterpreter, InvalidBrainfuck
+from character_set import CharacterSetFromString
 from ga_string_utils import generate_random_string, breed_strings
 from timeout import timelimit, TimeoutError, OoopsError
 
@@ -17,6 +18,7 @@ WEIGHTED_COMMANDS = (2 * ["+", "+++", "+++++", "-", "---", "-----"]) + [">>>", "
 TARGET_PROGRAM_OUTPUT = "hi"  # for speed, target characters are limited to lowercase letters (see character_set.py)
 MUTATION_RATE = 1
 POPULATION_SIZE = 40
+CHARACTER_SET = CharacterSetFromString(string.lowercase)
 
 
 @contextlib.contextmanager
@@ -34,7 +36,8 @@ def generate_random_program():
 
 @timelimit(PROGRAM_EXEC_TIMEOUT)
 def run(program):
-    bf_interpreter(program)
+    bf_interpreter = BrainfuckInterpreter(program_string=program, character_set=CHARACTER_SET)
+    bf_interpreter.run()
 
 
 def character_fitness(output_char, target_char):
@@ -42,17 +45,17 @@ def character_fitness(output_char, target_char):
         fitness = 1
 
     else:
-        output_char_val = CHARACTER_TO_VALUE[output_char]
-        target_char_val = CHARACTER_TO_VALUE[target_char]
+        output_char_val = CHARACTER_SET.get_value(output_char)
+        target_char_val = CHARACTER_SET.get_value(target_char)
 
         offset = abs(output_char_val - target_char_val)
         if output_char_val < target_char_val:
-            wrapped_offset = (output_char_val + CHARACTER_SET_SIZE) - target_char_val
+            wrapped_offset = (output_char_val + CHARACTER_SET.size) - target_char_val
         else:
-            wrapped_offset = (target_char_val + CHARACTER_SET_SIZE) - output_char_val
+            wrapped_offset = (target_char_val + CHARACTER_SET.size) - output_char_val
         char_offset = min(offset, wrapped_offset)
 
-        fitness = 1.6 * (0.5 - (float(char_offset) / CHARACTER_SET_SIZE))
+        fitness = 1.6 * (0.5 - (float(char_offset) / CHARACTER_SET.size))
 
     return fitness
 
@@ -63,6 +66,9 @@ def calculate_fitness(program):
     try:
         with stdout_redirect(StringIO.StringIO()) as new_stdout:
             run(program)
+
+    except InvalidBrainfuck:
+        fitness = -sys.maxint
 
     except (TimeoutError, OoopsError):
         print("timeout")

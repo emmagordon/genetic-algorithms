@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 
 import copy
 import ga
@@ -30,22 +30,22 @@ class RandomOperator(object):
         return self._str
 
 
-class Oper(object):
+class Operator(object):
     def __init__(self, depth):
         self.depth = depth
-        self.oper = RandomOperator()
+        self.operator = RandomOperator()
         self.children = [generate_tree(depth+1), generate_tree(depth+1)]
 
     def __call__(self, x_val):
-        return self.oper(self.children[0](x_val), self.children[1](x_val))
+        return self.operator(self.children[0](x_val), self.children[1](x_val))
 
     def __repr__(self):
-        return "("+str(self.children[0])+str(self.oper)+str(self.children[1])+")"
+        return "(" + str(self.children[0]) + str(self.operator) + str(self.children[1]) + ")"
 
 
 class Leaf(object):
     def __init__(self, depth):
-        self.oper = None
+        self.operator = None
         self.depth = depth
         self.value = _choose_terminal()
 
@@ -61,12 +61,12 @@ def _choose_terminal():
 
 
 def _is_leaf(tree):
-    return not hasattr(tree, "children")
+    return isinstance(tree, Leaf)
 
 
 def generate_tree(depth=0):
     if depth < MAX_TREE_DEPTH:
-        return random.choice([Oper, Leaf])(depth)
+        return random.choice([Operator, Leaf])(depth)
     else:
         return Leaf(depth)
 
@@ -143,7 +143,7 @@ def calc_fitness(func):
         reference_vals = map(target, x_vals)
         tested_vals = map(func, x_vals)
         differences = [(r - t) for (r, t) in zip(reference_vals, tested_vals)]
-        sum_of_squares = sum([a*a for a in differences])
+        sum_of_squares = sum([d * d for d in differences])
         return -sum_of_squares
 
     except ZeroDivisionError:
