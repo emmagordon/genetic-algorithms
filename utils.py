@@ -1,11 +1,10 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 
 import random
 
 
 def generate_random_string(character_list, max_length):
-    return "".join([random.choice(character_list)
-                    for _ in xrange(random.randint(1, max_length))])
+    return "".join([random.choice(character_list) for _ in xrange(random.randint(1, max_length))])
 
 
 def breed_strings(parent1, parent2, character_list, mutation_rate,
@@ -30,28 +29,16 @@ def split_string(dna, random_split=False):
 
 def mutate_string(dna, character_list, mutation_rate, replace_only=True, flip_rate=0.01):
     if replace_only:
-        mutation_types = ["replacement"]
+        mutation_type = "replacement"
     else:
-        mutation_types = ["replacement", "insertion", "deletion"]
-
-    mutation_type = random.choice(mutation_types)
+        mutation_type = random.choice(["replacement", "insertion", "deletion"])
 
     if random.random() < mutation_rate:
         if mutation_type == "replacement":
-            new_dna = ""
-            for gene in dna:
-                if random.random() < flip_rate:
-                    new_dna += random.choice(character_list)
-                else:
-                    new_dna += gene
-
+            dna = "".join([random.choice(character_list) if random.random() < flip_rate else gene
+                           for gene in dna])
         elif mutation_type == "insertion":
-            new_char = random.choice(character_list)
-            new_dna = new_char + dna
-
+            dna = random.choice(character_list) + dna
         else:
-            new_dna = dna[1:]
-    else:
-        new_dna = dna
-
-    return new_dna
+            dna = dna[1:]
+    return dna

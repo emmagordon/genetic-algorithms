@@ -1,9 +1,9 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 
 import ga
 import string
 
-from ga_string_utils import generate_random_string, breed_strings
+from utils import generate_random_string, breed_strings
 
 
 TARGET = "PYCON UK 2016: A P45 FROM C-3PO?"

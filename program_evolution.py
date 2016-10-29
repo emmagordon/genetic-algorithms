@@ -8,7 +8,7 @@ import StringIO
 import ga
 from brainfuck import BrainfuckInterpreter, InvalidBrainfuck
 from character_set import CharacterSetFromString
-from ga_string_utils import generate_random_string, breed_strings
+from utils import generate_random_string, breed_strings
 from timeout import timelimit, TimeoutError, OoopsError
 
 
@@ -102,10 +102,6 @@ if __name__ == "__main__":
                                        stop_condition=stop_condition,
                                        population_size=POPULATION_SIZE,
                                        roulette_selection=True)
-
-    # result = simplify(program)
-    # print(result)
-    # run(result)
 
     run(program)
     print("\n")
