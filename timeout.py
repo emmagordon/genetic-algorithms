@@ -25,7 +25,7 @@ def timelimit(timeout):
                 def run(self):
                     try:
                         self.result = function(*args, **kw)
-                    except Exception, e:
+                    except Exception:
                         self.error = sys.exc_info()[0]
 
             c = Calculator()
@@ -36,5 +36,7 @@ def timelimit(timeout):
             if c.error:
                 raise OoopsError
             return c.result
+
         return internal2
+
     return internal

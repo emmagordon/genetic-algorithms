@@ -18,8 +18,9 @@ class CharacterSetFromString(CharacterSet):
     def __init__(self, character_set_string):
         super(CharacterSetFromString, self).__init__()
         self.size = len(character_set_string)
-        self.char_to_value = {char: val for val, char in enumerate(character_set_string)}
-        self.value_to_char = {val: char for val, char in enumerate(character_set_string)}
+        character_values = enumerate(character_set_string)
+        self.char_to_value = {char: val for val, char in character_values}
+        self.value_to_char = {val: char for val, char in character_values}
 
 
 class AsciiCharacterSet(CharacterSet):

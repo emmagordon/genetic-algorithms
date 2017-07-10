@@ -95,7 +95,7 @@ class BrainfuckInterpreter(TuringMachine):
             try:
                 self.commands[instruction]()
             except KeyError:
-                # Brainfuck just ignores any characters that are not in it's operator set.
+                # Brainfuck ignores characters that aren't in it's operator set.
                 pass
             except SegmentationFault:
                 # Treat this as a valid way to trigger program exit.
@@ -130,5 +130,6 @@ class BrainfuckInterpreter(TuringMachine):
 
 
 if __name__ == "__main__":
-    bf_interpreter = BrainfuckInterpreter(program_string=sys.argv[1], character_set=AsciiCharacterSet())
+    bf_interpreter = BrainfuckInterpreter(program_string=sys.argv[1],
+                                          character_set=AsciiCharacterSet())
     bf_interpreter.run()

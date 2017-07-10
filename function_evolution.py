@@ -6,7 +6,6 @@ import operator
 import random
 import sys
 
-
 INBREEDING_RATE = 0.25
 MAX_TREE_DEPTH = 25
 POPULATION_SIZE = 100
@@ -34,13 +33,14 @@ class Operator(object):
     def __init__(self, depth):
         self.depth = depth
         self.operator = RandomOperator()
-        self.children = [generate_tree(depth+1), generate_tree(depth+1)]
+        self.children = [generate_tree(depth + 1), generate_tree(depth + 1)]
 
     def __call__(self, x_val):
         return self.operator(self.children[0](x_val), self.children[1](x_val))
 
     def __repr__(self):
-        return "(" + str(self.children[0]) + str(self.operator) + str(self.children[1]) + ")"
+        return "({}{}{})".format(self.children[0], self.operator,
+                                 self.children[1])
 
 
 class Leaf(object):

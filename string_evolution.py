@@ -5,7 +5,6 @@ import string
 
 from utils import generate_random_string, breed_strings
 
-
 TARGET = "EUROPYTHON 2017: Writing Code? Pfft... Evolve it instead!"
 CHARACTERS = string.printable
 MUTATION_RATE = 0.75
