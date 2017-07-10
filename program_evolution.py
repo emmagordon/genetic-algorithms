@@ -49,10 +49,7 @@ def character_fitness(output_char, target_char):
         target_char_val = CHARACTER_SET.get_value(target_char)
 
         offset = abs(output_char_val - target_char_val)
-        if output_char_val < target_char_val:
-            wrapped_offset = (output_char_val + CHARACTER_SET.size) - target_char_val
-        else:
-            wrapped_offset = (target_char_val + CHARACTER_SET.size) - output_char_val
+        wrapped_offset = CHARACTER_SET.size - offset
         char_offset = min(offset, wrapped_offset)
 
         fitness = 1.6 * (0.5 - (float(char_offset) / CHARACTER_SET.size))
