@@ -28,8 +28,9 @@ def calculate_population_stats(population):
 def select_candidates(population, roulette_selection=False):
     ordered_population = sorted(population, key=lambda x: x.fitness)
     if roulette_selection:
-        roulette_wheel = [count * candidate
-                          for count, candidate in enumerate(ordered_population)]
+        roulette_wheel = []
+        for i, candidate in enumerate(ordered_population):
+            roulette_wheel.extend(i * [candidate])
         selection = random.sample(roulette_wheel,
                                   (len(ordered_population) / 2))
     else:

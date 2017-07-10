@@ -11,13 +11,15 @@ from character_set import CharacterSetFromString
 from utils import generate_random_string, breed_strings
 from timeout import timelimit, TimeoutError, OoopsError
 
-
 MAX_PROGRAM_LEN = 200
 PROGRAM_EXEC_TIMEOUT = 1
-WEIGHTED_COMMANDS = (2 * ["+", "+++", "+++++", "-", "---", "-----"]) + [">>>", ">", "<", "<<<", "[", "]", "."]  # ","
-TARGET_PROGRAM_OUTPUT = "hi"  # for speed, target characters are limited to lowercase letters (see character_set.py)
+WEIGHTED_COMMANDS = (2 * ["+", "+++", "+++++", "-", "---", "-----"]
+                     ) + [">>>", ">", "<", "<<<", "[", "]", "."]  # ","
 MUTATION_RATE = 1
 POPULATION_SIZE = 40
+
+# For speed, target characters are limited to lowercase letters.
+TARGET_PROGRAM_OUTPUT = "hi"
 CHARACTER_SET = CharacterSetFromString(string.lowercase)
 
 
@@ -36,7 +38,8 @@ def generate_random_program():
 
 @timelimit(PROGRAM_EXEC_TIMEOUT)
 def run(program):
-    bf_interpreter = BrainfuckInterpreter(program_string=program, character_set=CHARACTER_SET)
+    bf_interpreter = BrainfuckInterpreter(program_string=program,
+                                          character_set=CHARACTER_SET)
     bf_interpreter.run()
 
 
@@ -85,7 +88,8 @@ def calculate_fitness(program):
 
 
 def breed_programs(prog1, prog2):
-    return breed_strings(prog1, prog2, WEIGHTED_COMMANDS, MUTATION_RATE, replace_only=False, random_split=False)
+    return breed_strings(prog1, prog2, WEIGHTED_COMMANDS, MUTATION_RATE,
+                         replace_only=False, random_split=False)
 
 
 def stop_condition(candidate):
