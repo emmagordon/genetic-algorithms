@@ -89,17 +89,14 @@ class BrainfuckInterpreter(TuringMachine):
             try:
                 instruction = self.program_string[self.program_position]
             except IndexError:
-                # We've reached the end of the program.
-                break
+                break  # We've reached the end of the program.
 
             try:
                 self.commands[instruction]()
             except KeyError:
-                # Brainfuck ignores characters that aren't in it's operator set.
-                pass
+                pass  # Brainfuck ignores characters not in it's operator set.
             except SegmentationFault:
-                # Treat this as a valid way to trigger program exit.
-                break
+                break  # Treat this as a valid way to trigger program exit.
 
             self.program_position += 1
 
@@ -116,15 +113,13 @@ class BrainfuckInterpreter(TuringMachine):
                 try:
                     opening_brace_position = opening_braces.pop()
                 except IndexError:
-                    # No matching opening brace
-                    raise InvalidBrainfuck
+                    raise InvalidBrainfuck  # No matching opening brace
 
                 find_opening_brace[position] = opening_brace_position
                 find_closing_brace[opening_brace_position] = position
 
         if len(opening_braces) != 0:
-            # Missing closing brace(s)
-            raise InvalidBrainfuck
+            raise InvalidBrainfuck  # Missing closing brace(s)
 
         return find_opening_brace, find_closing_brace
 

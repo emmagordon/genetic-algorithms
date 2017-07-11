@@ -37,8 +37,8 @@ def generate_random_program():
 
 
 @timelimit(PROGRAM_EXEC_TIMEOUT)
-def run(program):
-    bf_interpreter = BrainfuckInterpreter(program_string=program,
+def run(program_string):
+    bf_interpreter = BrainfuckInterpreter(program_string=program_string,
                                           character_set=CHARACTER_SET)
     bf_interpreter.run()
 
@@ -60,12 +60,12 @@ def character_fitness(output_char, target_char):
     return fitness
 
 
-def calculate_fitness(program):
+def calculate_fitness(program_string):
     fitness = 0
 
     try:
         with stdout_redirect(StringIO.StringIO()) as new_stdout:
-            run(program)
+            run(program_string)
 
     except InvalidBrainfuck:
         fitness = -sys.maxint
@@ -103,6 +103,5 @@ if __name__ == "__main__":
                                        stop_condition=stop_condition,
                                        population_size=POPULATION_SIZE,
                                        roulette_selection=True)
-
     run(program)
     print("\n")
