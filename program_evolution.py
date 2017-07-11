@@ -6,10 +6,10 @@ import sys
 import StringIO
 
 import ga
-from brainfuck import BrainfuckInterpreter, InvalidBrainfuck
+from brainfuck import BrainfuckInterpreter
 from character_set import CharacterSetFromString
 from utils import generate_random_string, breed_strings
-from timeout import timelimit, TimeoutError, OoopsError
+from timeout import timelimit, TimeoutError, ExecutionError
 
 MAX_PROGRAM_LEN = 200
 PROGRAM_EXEC_TIMEOUT = 1
@@ -67,11 +67,12 @@ def calculate_fitness(program_string):
         with stdout_redirect(StringIO.StringIO()) as new_stdout:
             run(program_string)
 
-    except InvalidBrainfuck:
+    except TimeoutError:
+        print("timeout")
         fitness = -sys.maxint
 
-    except (TimeoutError, OoopsError):
-        print("timeout")
+    except ExecutionError:
+        print("invalid")
         fitness = -sys.maxint
 
     else:

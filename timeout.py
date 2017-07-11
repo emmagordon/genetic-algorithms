@@ -8,7 +8,7 @@ class TimeoutError(Exception):
     pass
 
 
-class OoopsError(Exception):
+class ExecutionError(Exception):
     pass
 
 
@@ -32,8 +32,8 @@ def timelimit(timeout):
             c.join(timeout)
             if c.isAlive():
                 raise TimeoutError
-            if c.error:
-                raise OoopsError
+            elif c.error:
+                raise ExecutionError
             return c.result
 
         return internal2
