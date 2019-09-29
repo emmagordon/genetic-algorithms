@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import copy
 import ga
@@ -20,7 +20,7 @@ class RandomOperator(object):
         self.function, self._str = random.choice([(operator.add, "+"),
                                                   (operator.mul, "*"),
                                                   (operator.sub, "-"),
-                                                  (operator.div, "/")])
+                                                  (operator.truediv, "/")])
 
     def __call__(self, *args, **kwargs):
         return self.function(*args, **kwargs)
@@ -97,7 +97,7 @@ def choose_random_tree_element(tree):
     depth = random.randint(0, MAX_TREE_DEPTH)
 
     tree_element = tree
-    for i in xrange(depth):
+    for i in range(depth):
         if not _is_leaf(tree_element):
             child = random.choice([0, 1])
             tree_element = tree_element.children[child]
@@ -139,7 +139,7 @@ def breed(parent1, parent2):
 
 def calc_fitness(func):
     try:
-        x_vals = xrange(-100, 100, 1)
+        x_vals = range(-100, 100, 1)
         reference_vals = map(target, x_vals)
         tested_vals = map(func, x_vals)
         differences = [(r - t) for (r, t) in zip(reference_vals, tested_vals)]
@@ -147,7 +147,7 @@ def calc_fitness(func):
         return -sum_of_squares
 
     except ZeroDivisionError:
-        return -sys.maxint
+        return -sys.maxsize
 
 
 def stop_condition(candidate):

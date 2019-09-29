@@ -71,7 +71,7 @@ class BrainfuckInterpreter(TuringMachine):
 
     def input_value_at_pointer(self):
         while True:
-            user_input = raw_input("Enter a single character:")
+            user_input = input("Enter a single character:")
             if len(user_input) == 1:
                 self.set_value_at_pointer(self.character_set.get_value(user_input))
                 break

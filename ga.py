@@ -7,7 +7,7 @@ Population = namedtuple("Population", "average min max size best")
 
 def generate_population(generator_func, fitness_func, population_size=100):
     candidates = []
-    for _ in xrange(population_size):
+    for _ in range(population_size):
         dna = generator_func()
         fitness = fitness_func(dna)
         candidate = Candidate(dna=dna, fitness=fitness)
@@ -26,15 +26,15 @@ def calculate_population_stats(population):
 
 
 def select_candidates(population, roulette_selection=False):
+    half_population_size = int(len(population) / 2)
     ordered_population = sorted(population, key=lambda x: x.fitness)
     if roulette_selection:
         roulette_wheel = []
         for i, candidate in enumerate(ordered_population):
             roulette_wheel.extend(i * [candidate])
-        selection = random.sample(roulette_wheel,
-                                  (len(ordered_population) / 2))
+        selection = random.sample(roulette_wheel, half_population_size)
     else:
-        selection = ordered_population[len(ordered_population) / 2:]
+        selection = ordered_population[half_population_size:]
     return selection
 
 

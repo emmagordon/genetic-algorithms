@@ -4,10 +4,6 @@ import threading
 import sys
 
 
-class TimeoutError(Exception):
-    pass
-
-
 class ExecutionError(Exception):
     pass
 

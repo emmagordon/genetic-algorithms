@@ -1,11 +1,11 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import ga
 import string
 
 from utils import generate_random_string, breed_strings
 
-TARGET = "EUROPYTHON 2017: Writing code? Pfft... Evolve it instead!"
+TARGET = "Writing code? Pfft... Evolve it instead!"
 CHARACTERS = string.printable
 MUTATION_RATE = 0.75
 MAX_STRING_LENGTH = 100

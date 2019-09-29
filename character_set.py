@@ -23,5 +23,5 @@ class AsciiCharacterSet(CharacterSet):
     def __init__(self):
         super(AsciiCharacterSet, self).__init__()
         self.size = 256
-        self.char_to_value = {chr(val): val for val in xrange(self.size)}
-        self.value_to_char = {val: chr(val) for val in xrange(self.size)}
+        self.char_to_value = {chr(val): val for val in range(self.size)}
+        self.value_to_char = {val: chr(val) for val in range(self.size)}
