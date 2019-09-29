@@ -1,15 +1,15 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import contextlib
 import string
 import sys
-import StringIO
+import io
 
 import ga
 from brainfuck import BrainfuckInterpreter
 from character_set import CharacterSetFromString
 from utils import generate_random_string, breed_strings
-from timeout import timelimit, TimeoutError, ExecutionError
+from timeout import timelimit, ExecutionError
 
 MAX_PROGRAM_LEN = 200
 PROGRAM_EXEC_TIMEOUT = 1
@@ -20,7 +20,7 @@ POPULATION_SIZE = 40
 
 # For speed, target characters are limited to lowercase letters.
 TARGET_PROGRAM_OUTPUT = "hi"
-CHARACTER_SET = CharacterSetFromString(string.lowercase)
+CHARACTER_SET = CharacterSetFromString(string.ascii_lowercase)
 
 
 @contextlib.contextmanager
@@ -64,16 +64,16 @@ def calculate_fitness(program_string):
     fitness = 0
 
     try:
-        with stdout_redirect(StringIO.StringIO()) as new_stdout:
+        with stdout_redirect(io.StringIO()) as new_stdout:
             run(program_string)
 
     except TimeoutError:
         print("timeout")
-        fitness = -sys.maxint
+        fitness = -sys.maxsize
 
     except ExecutionError:
         print("invalid")
-        fitness = -sys.maxint
+        fitness = -sys.maxsize
 
     else:
         new_stdout.seek(0)

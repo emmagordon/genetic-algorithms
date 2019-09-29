@@ -3,7 +3,7 @@ import random
 
 def generate_random_string(character_list, max_length):
     return "".join([random.choice(character_list)
-                    for _ in xrange(random.randint(1, max_length))])
+                    for _ in range(random.randint(1, max_length))])
 
 
 def breed_strings(parent1, parent2, character_list, mutation_rate,
@@ -24,7 +24,8 @@ def split_string(dna, random_split=False):
         split_point = random.randint(1, (len(dna) - 1))
         substrings = dna[:split_point], dna[split_point:]
     else:
-        substrings = dna[:len(dna) / 2], dna[len(dna) / 2:]
+        midpoint = int(len(dna) / 2)
+        substrings = dna[:midpoint], dna[midpoint:]
     return substrings
 
 
