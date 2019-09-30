@@ -2,8 +2,8 @@ import random
 
 
 def generate_random_string(character_list, max_length):
-    return "".join([random.choice(character_list)
-                    for _ in range(random.randint(1, max_length))])
+    string_len = random.randint(1, max_length)
+    return "".join([random.choice(character_list) for _ in range(string_len)])
 
 
 def breed_strings(parent1, parent2, character_list, mutation_rate,
@@ -22,11 +22,10 @@ def breed_strings(parent1, parent2, character_list, mutation_rate,
 def split_string(dna, random_split=False):
     if random_split:
         split_point = random.randint(1, (len(dna) - 1))
-        substrings = dna[:split_point], dna[split_point:]
     else:
-        midpoint = int(len(dna) / 2)
-        substrings = dna[:midpoint], dna[midpoint:]
-    return substrings
+        split_point = int(len(dna) / 2)
+
+    return dna[:split_point], dna[split_point:]
 
 
 def mutate_string(dna, character_list, mutation_rate, replace_only=True,
@@ -45,4 +44,5 @@ def mutate_string(dna, character_list, mutation_rate, replace_only=True,
             dna = random.choice(character_list) + dna
         else:
             dna = dna[1:]
+
     return dna

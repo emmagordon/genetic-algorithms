@@ -119,10 +119,7 @@ def mutate(tree):
 
 
 def avoid_inbreeding():
-    if random.random() < INBREEDING_RATE:
-        return False
-    else:
-        return True
+    return random.random() > INBREEDING_RATE
 
 
 def breed(parent1, parent2):

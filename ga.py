@@ -5,6 +5,24 @@ Candidate = namedtuple("Candidate", "dna fitness")
 Population = namedtuple("Population", "average min max size best")
 
 
+def run_genetic_algorithm(spawn_func, breed_func, fitness_func,
+                          stop_condition, population_size=100,
+                          roulette_selection=False):
+    candidates = generate_population(spawn_func, fitness_func,
+                                     population_size)
+    num_iterations = 0
+    while True:
+        print(calculate_population_stats(candidates))
+        for candidate in candidates:
+            if stop_condition(candidate):
+                print("Number of Iterations: %d" % num_iterations)
+                return candidate.dna
+        candidates = select_candidates(candidates,
+                                       roulette_selection=roulette_selection)
+        candidates = breed_population(candidates, breed_func, fitness_func)
+        num_iterations += 1
+
+
 def generate_population(generator_func, fitness_func, population_size=100):
     candidates = []
     for _ in range(population_size):
@@ -49,21 +67,3 @@ def breed_population(candidates, breed_func, fitness_func):
         child = Candidate(dna=child_dna, fitness=child_fitness)
         next_gen.extend([parent1, child])
     return next_gen
-
-
-def run_genetic_algorithm(spawn_func, breed_func, fitness_func,
-                          stop_condition, population_size=100,
-                          roulette_selection=False):
-    candidates = generate_population(spawn_func, fitness_func,
-                                     population_size)
-    num_iterations = 0
-    while True:
-        print(calculate_population_stats(candidates))
-        for candidate in candidates:
-            if stop_condition(candidate):
-                print("Number of Iterations: %d" % num_iterations)
-                return candidate.dna
-        candidates = select_candidates(candidates,
-                                       roulette_selection=roulette_selection)
-        candidates = breed_population(candidates, breed_func, fitness_func)
-        num_iterations += 1

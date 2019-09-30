@@ -44,7 +44,7 @@ class TuringMachine(object):
 
 
 class BrainfuckInterpreter(TuringMachine):
-    def __init__(self, program_string, character_set):
+    def __init__(self, program_string, character_set: CharacterSet):
         super(BrainfuckInterpreter, self).__init__()
 
         self.commands = {">": self.move_pointer_forwards,
@@ -62,7 +62,6 @@ class BrainfuckInterpreter(TuringMachine):
         # Generate mappings to lookup location of matching braces.
         self.find_opening_brace, self.find_closing_brace = self._find_braces()
 
-        assert isinstance(character_set, CharacterSet)
         self.character_set = character_set
         self.cell_size = character_set.size
 
@@ -94,7 +93,7 @@ class BrainfuckInterpreter(TuringMachine):
             try:
                 self.commands[instruction]()
             except KeyError:
-                pass  # Brainfuck ignores characters not in it's operator set.
+                pass  # Brainfuck ignores characters not in its operator set.
             except SegmentationFault:
                 break  # Treat this as a valid way to trigger program exit.
 
