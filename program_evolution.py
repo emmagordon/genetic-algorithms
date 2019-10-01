@@ -33,7 +33,7 @@ def breed_programs(prog1, prog2):
 
 
 def stop_condition(candidate):
-    return candidate.fitness == (len(TARGET_PROGRAM_OUTPUT) + 1)
+    return candidate.fitness == _calculate_fitness(TARGET_PROGRAM_OUTPUT)
 
 
 def calculate_fitness(program_string):
